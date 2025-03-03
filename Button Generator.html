@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customizable Button Generator</title>
+    <style>
+        /* Basic Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: #fff;
+            padding: 30px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            text-align: center;
+            color: #fff;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .button-preview {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        #customButton {
+            padding: 15px 30px;
+            border: none;
+            color: #fff;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .control {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .control label {
+            flex: 1;
+            text-align: left;
+            font-size: 1em;
+        }
+
+        .control input[type="range"] {
+            flex: 2;
+            width: 100%;
+        }
+
+        .control input[type="color"] {
+            width: 60px;
+            height: 40px;
+            border: none;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .css-output {
+            margin-top: 20px;
+            background: #333;
+            color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: monospace;
+            word-wrap: break-word;
+        }
+
+        .copy-btn {
+            margin-top: 10px;
+            background: #007bff;
+            border: none;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: #0056b3;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Customizable Button Generator</h1>
+
+    <div class="container">
+        <!-- Button Preview -->
+        <div class="button-preview">
+            <button id="customButton">Click Here!</button>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <!-- Background Color -->
+            <div class="control">
+                <label for="bgColor">Background Color:</label>
+                <input type="color" id="bgColor" value="#007bff">
+            </div>
+
+            <!-- Text Color -->
+            <div class="control">
+                <label for="textColor">Text Color:</label>
+                <input type="color" id="textColor" value="#ffffff">
+            </div>
+
+            <!-- Border Radius -->
+            <div class="control">
+                <label for="borderRadius">Border Radius:</label>
+                <input type="range" id="borderRadius" min="0" max="100" value="10">
+            </div>
+
+            <!-- Box Shadow -->
+            <div class="control">
+                <label for="boxShadow">Box Shadow:</label>
+                <input type="range" id="boxShadow" min="0" max="30" value="10">
+            </div>
+
+            <!-- Font Size -->
+            <div class="control">
+                <label for="fontSize">Font Size (px):</label>
+                <input type="range" id="fontSize" min="10" max="50" value="20">
+            </div>
+
+            <!-- Button Text -->
+            <div class="control">
+                <label for="buttonText">Button Text:</label>
+                <input type="text" id="buttonText" placeholder="Click Here!" value="Click Here!">
+            </div>
+
+            <!-- CSS Code Output -->
+            <div class="css-output" id="cssOutput">
+                /* CSS Code will appear here */
+            </div>
+
+            <!-- Copy CSS Button -->
+            <button class="copy-btn" onclick="copyCSS()">Copy CSS Code</button>
+        </div>
+    </div>
+<!--
+    <div class="footer">
+        Built by Devon Emelle
+    </div>                       -->
+
+    <script>
+        const button = document.getElementById('customButton');
+        const bgColorInput = document.getElementById('bgColor');
+        const textColorInput = document.getElementById('textColor');
+        const borderRadiusInput = document.getElementById('borderRadius');
+        const boxShadowInput = document.getElementById('boxShadow');
+        const fontSizeInput = document.getElementById('fontSize');
+        const buttonTextInput = document.getElementById('buttonText');
+        const cssOutput = document.getElementById('cssOutput');
+
+        // Event Listeners
+        const inputs = [bgColorInput, textColorInput, borderRadiusInput, boxShadowInput, fontSizeInput, buttonTextInput];
+        inputs.forEach(input => input.addEventListener('input', updateButton));
+
+        // Update Button Styles
+        function updateButton() {
+            const bgColor = bgColorInput.value;
+            const textColor = textColorInput.value;
+            const borderRadius = borderRadiusInput.value + 'px';
+            const boxShadow = `0 5px ${boxShadowInput.value}px rgba(0, 0, 0, 0.3)`;
+            const fontSize = fontSizeInput.value + 'px';
+            const buttonText = buttonTextInput.value;
+
+            button.style.backgroundColor = bgColor;
+            button.style.color = textColor;
+            button.style.borderRadius = borderRadius;
+            button.style.boxShadow = boxShadow;
+            button.style.fontSize = fontSize;
+            button.textContent = buttonText;
+
+            // Generate CSS Code
+            const cssCode = `
+button {
+    background-color: ${bgColor};
+    color: ${textColor};
+    border-radius: ${borderRadius};
+    box-shadow: ${boxShadow};
+    font-size: ${fontSize};
+    padding: 15px 30px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}`;
+            cssOutput.textContent = cssCode.trim();
+        }
+
+        // Copy CSS to clipboard
+        function copyCSS() {
+            const cssCode = cssOutput.textContent;
+            navigator.clipboard.writeText(cssCode).then(() => {
+                alert('CSS code copied to clipboard!');
+            }).catch(err => {
+                alert('Failed to copy CSS code.');
+            });
+        }
+
+        // Initialize with default settings
+        updateButton();
+    </script>
+</body>
+</html>
